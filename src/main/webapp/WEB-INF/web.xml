@@ -4,4 +4,12 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+  <servlet>
+    <servlet-name>webchat</servlet-name>
+    <servlet-class>Controller</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>webchat</servlet-name>
+    <url-pattern>/webchat</url-pattern>
+  </servlet-mapping>
 </web-app>
