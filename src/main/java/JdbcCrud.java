@@ -44,7 +44,7 @@ public class JdbcCrud {
             }
         } else if("h2Connection".equals(property)) {
             try {
-                connection = DriverManager.getConnection(bundle.getString("url"));
+                connection = DriverManager.getConnection("jdbc:h2:mem:");
                 createStatement = connection.prepareStatement(CREATE);
                 createStatement.executeUpdate();
             } catch (SQLException e) {

@@ -81,11 +81,11 @@ public class Controller extends HttpServlet {
                 }
             }
         }
-        try {
+    /*    try {
             resp.addCookie(new Cookie("nickname", URLEncoder.encode(nickName, "UTF-8")));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }
+        }*/
         try {
             resp.getWriter().print(PAGECOD_ONE + jdbcCrud.read() + PAGECOD_TWO + nickName + PAGECOD_THREE);
             resp.getWriter().close();
