@@ -7,7 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -46,6 +50,7 @@ public class Controller extends HttpServlet {
             "</html>";
 
     private JdbcCrud jdbcCrud = JdbcCrud.getInstance();
+    private TemplateEngine templateEngine = TemplateEngine.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -67,32 +72,40 @@ public class Controller extends HttpServlet {
         jdbcCrud.close();
     }
 
-    public void process(HttpServletRequest req, HttpServletResponse resp) {
-        resp.setCharacterEncoding("UTF-8");
-        resp.setContentType("text/html;charset=UTF-8");
-
-        String nickName = null;
+    public void process(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String path = req.getPathInfo();
+        req.setCharacterEncoding("UTF-8");
+        req.getSession();
+        String nickName = "";
+        String JSESSIONID = "";
         Cookie[] cookies = req.getCookies();
-        if (cookies!=null){
-            for (Cookie cookie: cookies){
-                if ("nickname".equals(cookie.getName())){
-                    nickName=cookie.getValue();
-                    break;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("nickname".equals(cookie.getName())) {
+                    nickName = URLDecoder.decode(cookie.getValue(), "UTF-8");
                 }
             }
         }
-    /*    try {
-            resp.addCookie(new Cookie("nickname", URLEncoder.encode(nickName, "UTF-8")));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }*/
-        try {
-            resp.getWriter().print(PAGECOD_ONE + jdbcCrud.read() + PAGECOD_TWO + nickName + PAGECOD_THREE);
-            resp.getWriter().close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        if ("/".equals(path)) {
+            String message = req.getParameter("msg");
+            String nickname = req.getParameter("nick");
+            Date date = new Date();
+            if (message != null && nickname != null) {
+                jdbcCrud.insert(nickname, date, message);
+                genChatPage(resp, nickname);
+            } else resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } else resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    }
 
-
+    private void genChatPage(HttpServletResponse resp, String nickName) throws IOException {
+        Map<String, Object> pageVariables = new HashMap<String, Object>();
+        pageVariables.put("nick", nickName);
+        pageVariables.put("messages", jdbcCrud.read());
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("text/html;charset=utf-8");
+        resp.addCookie(new Cookie("nickname", URLEncoder.encode(nickName, "UTF-8")));
+        resp.getWriter().println(new String(templateEngine.getPage("index.html", pageVariables)));
+        resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+        resp.getWriter().close();
     }
 }
