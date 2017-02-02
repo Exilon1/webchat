@@ -1,26 +1,26 @@
+package dao;
+
 import java.sql.*;
-import java.util.*;
 import java.util.Date;
 
 /**
  * Created by Alexey on 17.01.2017.
  */
-public class JdbcCrud {
+public class MessagesCrud {
 
-    private JdbcCrud() {
+    private MessagesCrud() {
     }
 
     private static class SingletonHelper {
-        private static final JdbcCrud SINGLETON = new JdbcCrud();
+        private static final MessagesCrud SINGLETON = new MessagesCrud();
     }
 
-    public static JdbcCrud getInstance() {
-        return JdbcCrud.SingletonHelper.SINGLETON;
+    public static MessagesCrud getInstance() {
+        return MessagesCrud.SingletonHelper.SINGLETON;
     }
 
 
     private Connection connection;
-    private ResourceBundle bundle = ResourceBundle.getBundle("h2Connection");
 
     public static final String CREATE = "CREATE TABLE MESSAGES (Nickname VARCHAR(127), Date DATETIME(23), Message VARCHAR(255))";
     public static final String READ = "SELECT * FROM MESSAGES";
@@ -36,7 +36,7 @@ public class JdbcCrud {
         if ("postgresConnection".equals(property)) {
             try {
                 Class.forName("org.postgresql.Driver");
-                connection = DriverManager.getConnection(bundle.getString("url"), bundle.getString("user"), bundle.getString("password"));
+                connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/test", "postgres", "postgres");
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (SQLException e) {

@@ -12,7 +12,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <h2.version>1.4.190</h2.version>
     <servlet.version>2.5</servlet.version>
-    <freemaker.version>2.3.20</freemaker.version>
+    <freemaker.version>2.3.22</freemaker.version>
   </properties>
 
   <dependencies>

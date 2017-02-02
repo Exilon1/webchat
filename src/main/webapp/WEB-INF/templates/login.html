@@ -1,0 +1,44 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <title>HW_WebCalc Login</title>
+</head>
+<body>
+<div id="container">
+    <form action="./login" method="post">
+        <label for="login">Логин</label>
+        <input id="login" required value="Alex" type="text" name="login" maxlength="30">
+        <label for="pass">Пароль</label>
+        <input id="pass" required value="123" type="text" name="pass" maxlength="30">
+        <input type="submit" value="Вход">
+    </form>
+</div>
+<style>
+    #container{
+        font-family: 'Roboto', sans-serif;
+        font-size:16px;
+        padding: 8px;
+        border: 1px solid #dfdfdf;
+        color: #3f3f3f;
+        width: 360px;
+        margin: 150px auto;
+    }
+    #container form{
+        margin: 8px 0 8px 0;
+    }
+    input, textarea {
+        width: 100%;
+    }
+    label {
+        padding-bottom:4px;
+        padding-top:4px;
+        display: block;
+    }
+    input[type="submit"]{
+        margin-top:8px;
+    }
+</style>
+</body>
+</html>
