@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-ear" name="webchat:ear exploded">
+    <output-path>$PROJECT_DIR$/classes/artifacts/webchat_ear_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="webchat/javaeeApplication/javaEEApplication" />
+    </root>
+  </artifact>
+</component>

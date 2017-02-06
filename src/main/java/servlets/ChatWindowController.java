@@ -22,6 +22,8 @@ public class ChatWindowController extends HttpServlet {
     private MessagesCrud messagesCrud = MessagesCrud.getInstance();
     private AuthentificationCrud authentificationCrud = AuthentificationCrud.getInstance();
 
+    private final String SESSION = "JSESSIONID";
+
     @Override
     public void destroy() {
         messagesCrud.close();
@@ -37,20 +39,20 @@ public class ChatWindowController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         String nickName = "";
-        String JSESSIONID = "";
+        String jsessionid = "";
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("nickname".equals(cookie.getName())) {
                     nickName = URLDecoder.decode(cookie.getValue(), "UTF-8");
                 }
-                if ("JSESSIONID".equals(cookie.getName())) {
-                    JSESSIONID = cookie.getValue();
+                if (SESSION.equals(cookie.getName())) {
+                    jsessionid = cookie.getValue();
                 }
             }
         }
-        if (authentificationCrud.isSessionContains(JSESSIONID)) {
-            genChatPage(resp, nickName, session.getServletContext());
+        if (authentificationCrud.isSessionContains(jsessionid)) {
+            genPage(resp, nickName, session.getServletContext());
         } else {
             System.out.println("chat forward to login");
             req.getRequestDispatcher("/login").forward(req,resp);
@@ -66,12 +68,12 @@ public class ChatWindowController extends HttpServlet {
         Date msgDate = new Date();
         if (msg != null & nickname != null) {
             messagesCrud.insert(nickname, msgDate, msg);
-            genChatPage(resp, nickname, session.getServletContext());
+            genPage(resp, nickname, session.getServletContext());
         } else resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
     }
 
-    private void genChatPage(HttpServletResponse resp, String nickName, ServletContext servletContext) throws IOException {
+    private void genPage(HttpServletResponse resp, String nickName, ServletContext servletContext) throws IOException {
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("nick", nickName);
         resp.addCookie(new Cookie("nickname", URLEncoder.encode(nickName, "UTF-8")));

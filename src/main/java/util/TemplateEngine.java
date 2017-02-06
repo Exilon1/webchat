@@ -1,7 +1,6 @@
 package util;
 
-import dao.MessagesCrud;
-import freemarker.cache.FileTemplateLoader;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;

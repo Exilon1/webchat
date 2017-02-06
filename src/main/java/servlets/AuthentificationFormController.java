@@ -14,6 +14,7 @@ import java.io.IOException;
 public class AuthentificationFormController extends HttpServlet {
 
     private AuthentificationCrud authentificationCrud = AuthentificationCrud.getInstance();
+    private final String SESSION = "JSESSIONID";
 
     @Override
     public void destroy() {
@@ -32,7 +33,7 @@ public class AuthentificationFormController extends HttpServlet {
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("JSESSIONID".equals(cookie.getName())) {
+                if (SESSION.equals(cookie.getName())) {
                     JSESSIONID = cookie.getValue();
                 }
             }
@@ -40,7 +41,7 @@ public class AuthentificationFormController extends HttpServlet {
         if (authentificationCrud.isSessionContains(JSESSIONID)) {
             resp.sendRedirect("./");
         } else {
-            genLoginPage(resp, session.getServletContext());
+            genPage(resp, session.getServletContext());
         }
         resp.setStatus(HttpServletResponse.SC_OK);
     }
@@ -48,28 +49,29 @@ public class AuthentificationFormController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        String login = req.getParameter("Nickname");
-        String pass = req.getParameter("Password");
+        String login = req.getParameter("login");
+        String pass = req.getParameter("pass");
         if (login != null & pass != null) {
             boolean isAuth = authentificationCrud.verifyAccount(login, pass);
             if (isAuth) {
-                String jsessionid = "";
+                String jsessionid=null;
                 Cookie[] cookies = req.getCookies();
                 if (cookies!=null)for (Cookie cookie:cookies){
-                    if ("JSESSIONID".equals(cookie.getName())){
+                    if (SESSION.equals(cookie.getName())){
                         jsessionid = cookie.getValue();
                         break;
                     }
                 }
-                authentificationCrud.isSessionContains(jsessionid);
+                if (jsessionid!=null)
+                    authentificationCrud.insertSession(jsessionid);
                 resp.sendRedirect("./");
-            } else genLoginPage(resp, session.getServletContext());
+            } else genPage(resp, session.getServletContext());
         } else resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
     }
 
 
-    private void genLoginPage(HttpServletResponse resp, ServletContext servletContext) throws IOException {
+    private void genPage(HttpServletResponse resp, ServletContext servletContext) throws IOException {
         resp.setContentType("text/html;charset=utf-8");
         resp.getWriter().println(TemplateEngine.getInstance().getPage("login.html", null, servletContext));
         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
