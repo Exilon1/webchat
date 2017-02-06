@@ -3,11 +3,9 @@ package servlets;
 import dao.AuthentificationCrud;
 import util.TemplateEngine;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 
 /**
@@ -29,7 +27,7 @@ public class AuthentificationFormController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getSession();
+        HttpSession session = req.getSession();
         String JSESSIONID = "";
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
@@ -42,13 +40,14 @@ public class AuthentificationFormController extends HttpServlet {
         if (authentificationCrud.isSessionContains(JSESSIONID)) {
             resp.sendRedirect("./");
         } else {
-            genLoginPage(resp);
+            genLoginPage(resp, session.getServletContext());
         }
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
         String login = req.getParameter("Nickname");
         String pass = req.getParameter("Password");
         if (login != null & pass != null) {
@@ -64,15 +63,15 @@ public class AuthentificationFormController extends HttpServlet {
                 }
                 authentificationCrud.isSessionContains(jsessionid);
                 resp.sendRedirect("./");
-            } else genLoginPage(resp);
+            } else genLoginPage(resp, session.getServletContext());
         } else resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
     }
 
 
-    private void genLoginPage(HttpServletResponse resp) throws IOException {
+    private void genLoginPage(HttpServletResponse resp, ServletContext servletContext) throws IOException {
         resp.setContentType("text/html;charset=utf-8");
-        resp.getWriter().println(TemplateEngine.getInstance().getPage("login.html", null));
+        resp.getWriter().println(TemplateEngine.getInstance().getPage("login.html", null, servletContext));
         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         resp.getWriter().close();
 

@@ -60,12 +60,13 @@ public class ChatWindowController extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
         String msg = req.getParameter("msg");
         String nickname = req.getParameter("nick");
         Date msgDate = new Date();
         if (msg != null & nickname != null) {
             messagesCrud.insert(nickname, msgDate, msg);
-            genChatPage(resp, nickname);
+            genChatPage(resp, nickname, session.getServletContext());
         } else resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
     }
