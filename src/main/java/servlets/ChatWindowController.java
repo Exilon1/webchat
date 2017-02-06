@@ -4,11 +4,9 @@ import util.TemplateEngine;
 import dao.AuthentificationCrud;
 import dao.MessagesCrud;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -37,7 +35,7 @@ public class ChatWindowController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getSession();
+        HttpSession session = req.getSession();
         String nickName = "";
         String JSESSIONID = "";
         Cookie[] cookies = req.getCookies();
@@ -52,7 +50,7 @@ public class ChatWindowController extends HttpServlet {
             }
         }
         if (authentificationCrud.isSessionContains(JSESSIONID)) {
-            genChatPage(resp, nickName);
+            genChatPage(resp, nickName, session.getServletContext());
         } else {
             System.out.println("chat forward to login");
             req.getRequestDispatcher("/login").forward(req,resp);
@@ -72,11 +70,11 @@ public class ChatWindowController extends HttpServlet {
 
     }
 
-    private void genChatPage(HttpServletResponse resp, String nickName) throws IOException {
+    private void genChatPage(HttpServletResponse resp, String nickName, ServletContext servletContext) throws IOException {
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("nick", nickName);
         resp.addCookie(new Cookie("nickname", URLEncoder.encode(nickName, "UTF-8")));
-        resp.getWriter().println(TemplateEngine.getInstance().getPage("index.html", pageVariables));
+        resp.getWriter().println(TemplateEngine.getInstance().getPage("index.html", pageVariables, servletContext));
         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         resp.getWriter().close();
     }

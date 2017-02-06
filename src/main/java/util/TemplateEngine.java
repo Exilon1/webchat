@@ -6,6 +6,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
+import javax.servlet.ServletContext;
 import java.io.*;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public class TemplateEngine {
         return TemplateEngine.SingletonHelper.SINGLETON;
     }
 
-    public String getPage(String filename, Map<String,Object> data) throws UnsupportedEncodingException {
+    public String getPage(String filename, Map<String,Object> data, ServletContext servletContext) throws UnsupportedEncodingException {
         Writer stream = new StringWriter();
         try {
             cfg.setClassForTemplateLoading(this.getClass(), "/");
