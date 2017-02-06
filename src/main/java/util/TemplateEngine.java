@@ -34,7 +34,7 @@ public class TemplateEngine {
     public String getPage(String filename, Map<String,Object> data, ServletContext servletContext) throws UnsupportedEncodingException {
         Writer stream = new StringWriter();
         try {
-            cfg.setClassForTemplateLoading(this.getClass(), "/");
+            cfg.setServletContextForTemplateLoading(servletContext, "/");
             Template template = cfg.getTemplate(HTML_DIR + File.separator + filename, "UTF-8");
             template.process(data,stream);
         } catch (IOException e) {
