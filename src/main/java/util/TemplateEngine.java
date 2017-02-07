@@ -14,7 +14,6 @@ import java.util.Map;
  */
 public class TemplateEngine {
 
-    private static final String HTML_DIR = "templates";
     private final Configuration cfg;
 
 
@@ -30,11 +29,11 @@ public class TemplateEngine {
         return TemplateEngine.SingletonHelper.SINGLETON;
     }
 
-    public String getPage(String filename, Map<String,Object> data, ServletContext servletContext) throws UnsupportedEncodingException {
+    public String generatePage(String filename, Map<String,Object> data, ServletContext servletContext) throws UnsupportedEncodingException {
         Writer stream = new StringWriter();
         try {
             cfg.setServletContextForTemplateLoading(servletContext, "/");
-            Template template = cfg.getTemplate(HTML_DIR + File.separator + filename, "UTF-8");
+            Template template = cfg.getTemplate("templates" + File.separator + filename, "UTF-8");
             template.process(data,stream);
         } catch (IOException e) {
             e.printStackTrace();

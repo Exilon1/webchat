@@ -101,7 +101,7 @@ public class AuthentificationCrud {
         try {
             insertSessStatement.setString(1, sessonid);
             insertSessStatement.setString(2, nickname);
-            insertAccStatement.executeUpdate();
+            insertSessStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -113,7 +113,7 @@ public class AuthentificationCrud {
         boolean isContains = false;
         try (ResultSet rs = readSessStatement.executeQuery()) {
             while (rs.next()) {
-                if (rs.getString("Session").equals(sessonid)) {
+                 if (rs.getString("Session").equals(sessonid)) {
                     isContains = true;
                     break;
                 }

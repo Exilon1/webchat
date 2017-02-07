@@ -4,6 +4,7 @@
 
 <web-app>
   <display-name>WebChat</display-name>
+
     <servlet>
         <servlet-name>webchat</servlet-name>
         <servlet-class>servlets.ChatWindowController</servlet-class>

@@ -29,12 +29,14 @@ public class ChatWindowController extends HttpServlet {
     public void destroy() {
         messagesCrud.close();
         authentificationCrud.close();
+        System.out.println("ChatWindowController destroy");
     }
 
     @Override
     public void init() throws ServletException {
         messagesCrud.connect("h2Connection");
         authentificationCrud.connect("h2Connection");
+        System.out.println("ChatWindowController init");
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,13 +46,14 @@ public class ChatWindowController extends HttpServlet {
         for (Cookie cookie : req.getCookies()) {
             if ("nickname".equals(cookie.getName())) {
                 nickName = URLDecoder.decode(cookie.getValue(), "UTF-8");
+                System.out.println(">>>>>>> " + cookie.getValue());
             }
             if (SESSION.equals(cookie.getName())) {
                 jsessionid = cookie.getValue();
             }
         }
 
-        System.out.println(jsessionid);
+    //    System.out.println(jsessionid);
         if (authentificationCrud.isSessionContains(jsessionid)) {
             genPage(resp, nickName, session.getServletContext());
         } else {
@@ -78,7 +81,7 @@ public class ChatWindowController extends HttpServlet {
         map.put("nick", nickName);
         resp.addCookie(new Cookie("nickname", URLEncoder.encode(nickName, "UTF-8")));
         PrintWriter writer = resp.getWriter();
-        writer.println(TemplateEngine.getInstance().getPage("index.html", map, servletContext));
+        writer.println(TemplateEngine.getInstance().generatePage("index.html", map, servletContext));
         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         writer.close();
     }

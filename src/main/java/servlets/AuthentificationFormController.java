@@ -8,7 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
+import java.net.URLEncoder;
 
 /**
  * Created by Nikotin on 02.02.2017.
@@ -21,11 +21,13 @@ public class AuthentificationFormController extends HttpServlet {
     @Override
     public void destroy() {
     //    authentificationCrud.close();
+        System.out.println("AuthentificationFormController destroy");
     }
 
     @Override
     public void init() throws ServletException {
     //    authentificationCrud.connect("h2Connection");
+        System.out.println("AuthentificationFormController init");
     }
 
     @Override
@@ -38,8 +40,10 @@ public class AuthentificationFormController extends HttpServlet {
             }
         }
         if (authentificationCrud.isSessionContains(jsessionid)) {
+            System.out.println("AuthentificationFormController isSessionContains true");
             resp.sendRedirect("./");
         } else {
+            System.out.println("AuthentificationFormController isSessionContains false");
             genPage(resp, session.getServletContext());
         }
         resp.setStatus(HttpServletResponse.SC_OK);
@@ -52,7 +56,7 @@ public class AuthentificationFormController extends HttpServlet {
         String pass = req.getParameter("pass");
         if (login != null & pass != null) {
             boolean isAuth = authentificationCrud.verifyAccount(login, pass);
-            if (isAuth) {
+                        if (isAuth) {
                 String jsessionid = null;
                 for (Cookie cookie: req.getCookies()){
                     if (SESSION.equals(cookie.getName())){
@@ -62,6 +66,7 @@ public class AuthentificationFormController extends HttpServlet {
                 }
                 if (jsessionid!=null)
                     authentificationCrud.insertSession(jsessionid, login);
+                resp.addCookie(new Cookie("nickname", URLEncoder.encode(login, "UTF-8")));
                 resp.sendRedirect("./");
             } else genPage(resp, session.getServletContext());
         } else resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -72,9 +77,8 @@ public class AuthentificationFormController extends HttpServlet {
     private void genPage(HttpServletResponse resp, ServletContext servletContext) throws IOException {
         resp.setContentType("text/html;charset=utf-8");
         PrintWriter writer = resp.getWriter();
-        writer.println(TemplateEngine.getInstance().getPage("login.html", null, servletContext));
+        writer.println(TemplateEngine.getInstance().generatePage("login.html", null, servletContext));
         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         writer.close();
-
     }
 }
