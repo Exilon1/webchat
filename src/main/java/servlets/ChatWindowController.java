@@ -38,24 +38,23 @@ public class ChatWindowController extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        String nickName = "";
-        String jsessionid = "";
-        Cookie[] cookies = req.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("nickname".equals(cookie.getName())) {
-                    nickName = URLDecoder.decode(cookie.getValue(), "UTF-8");
-                }
-                if (SESSION.equals(cookie.getName())) {
-                    jsessionid = cookie.getValue();
-                }
+        String nickName = null;
+        String jsessionid = null;
+        for (Cookie cookie : req.getCookies()) {
+            if ("nickname".equals(cookie.getName())) {
+                nickName = URLDecoder.decode(cookie.getValue(), "UTF-8");
+            }
+            if (SESSION.equals(cookie.getName())) {
+                jsessionid = cookie.getValue();
             }
         }
+
+        System.out.println(jsessionid);
         if (authentificationCrud.isSessionContains(jsessionid)) {
             genPage(resp, nickName, session.getServletContext());
         } else {
             System.out.println("chat forward to login");
-            req.getRequestDispatcher("/login").forward(req,resp);
+            resp.sendRedirect("./login");
         }
         resp.setStatus(HttpServletResponse.SC_OK);
 
@@ -80,6 +79,10 @@ public class ChatWindowController extends HttpServlet {
         resp.getWriter().println(TemplateEngine.getInstance().getPage("index.html", pageVariables, servletContext));
         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         resp.getWriter().close();
+    }
+
+    private void process(HttpServletRequest req, HttpServletResponse resp) {
+        HttpSession session = req.getSession();
     }
 
 }

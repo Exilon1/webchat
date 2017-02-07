@@ -18,27 +18,24 @@ public class AuthentificationFormController extends HttpServlet {
 
     @Override
     public void destroy() {
-        authentificationCrud.close();
+    //    authentificationCrud.close();
     }
 
     @Override
     public void init() throws ServletException {
-        authentificationCrud.connect("h2Connection");
+    //    authentificationCrud.connect("h2Connection");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        String JSESSIONID = "";
-        Cookie[] cookies = req.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (SESSION.equals(cookie.getName())) {
-                    JSESSIONID = cookie.getValue();
-                }
+        String jsessionid = null;
+        for (Cookie cookie : req.getCookies()) {
+            if (SESSION.equals(cookie.getName())) {
+                jsessionid = cookie.getValue();
             }
         }
-        if (authentificationCrud.isSessionContains(JSESSIONID)) {
+        if (authentificationCrud.isSessionContains(jsessionid)) {
             resp.sendRedirect("./");
         } else {
             genPage(resp, session.getServletContext());
@@ -54,16 +51,15 @@ public class AuthentificationFormController extends HttpServlet {
         if (login != null & pass != null) {
             boolean isAuth = authentificationCrud.verifyAccount(login, pass);
             if (isAuth) {
-                String jsessionid=null;
-                Cookie[] cookies = req.getCookies();
-                if (cookies!=null)for (Cookie cookie:cookies){
+                String jsessionid = null;
+                for (Cookie cookie: req.getCookies()){
                     if (SESSION.equals(cookie.getName())){
                         jsessionid = cookie.getValue();
                         break;
                     }
                 }
                 if (jsessionid!=null)
-                    authentificationCrud.insertSession(jsessionid);
+                    authentificationCrud.insertSession(jsessionid, login);
                 resp.sendRedirect("./");
             } else genPage(resp, session.getServletContext());
         } else resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

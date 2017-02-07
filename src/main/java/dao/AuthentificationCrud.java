@@ -24,9 +24,9 @@ public class AuthentificationCrud {
     public static final String CREATE_ACC = "CREATE TABLE ACC (Nickname VARCHAR(127), Password VARCHAR(255))";
     public static final String READ_ACC = "SELECT * FROM ACC";
     public static final String INSERT_INTO_ACC = "INSERT INTO ACC(Nickname, Password) VALUES(?,?)";
-    public static final String CREATE_SESS = "CREATE TABLE SESS (Session VARCHAR(255))";
+    public static final String CREATE_SESS = "CREATE TABLE SESS (Session VARCHAR(255), Nickname VARCHAR(127))";
     public static final String READ_SESS = "SELECT * FROM SESS";
-    public static final String INSERT_INTO_SESS = "INSERT INTO SESS(Session) VALUES(?)";
+    public static final String INSERT_INTO_SESS = "INSERT INTO SESS(Session, Nickname) VALUES(?,?)";
 
 
     private PreparedStatement createAccStatement;
@@ -97,9 +97,10 @@ public class AuthentificationCrud {
         return isVerified;
     }
 
-    public void insertSession(String sessonid) {
+    public void insertSession(String sessonid, String nickname) {
         try {
             insertSessStatement.setString(1, sessonid);
+            insertSessStatement.setString(2, nickname);
             insertAccStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -107,6 +108,8 @@ public class AuthentificationCrud {
     }
 
     public boolean isSessionContains(String sessonid) {
+        if (sessonid==null)
+            return false;
         boolean isContains = false;
         try (ResultSet rs = readSessStatement.executeQuery()) {
             while (rs.next()) {
