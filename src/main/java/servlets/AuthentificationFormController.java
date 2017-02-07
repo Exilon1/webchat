@@ -7,6 +7,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 
 /**
  * Created by Nikotin on 02.02.2017.
@@ -69,9 +71,10 @@ public class AuthentificationFormController extends HttpServlet {
 
     private void genPage(HttpServletResponse resp, ServletContext servletContext) throws IOException {
         resp.setContentType("text/html;charset=utf-8");
-        resp.getWriter().println(TemplateEngine.getInstance().getPage("login.html", null, servletContext));
+        PrintWriter writer = resp.getWriter();
+        writer.println(TemplateEngine.getInstance().getPage("login.html", null, servletContext));
         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-        resp.getWriter().close();
+        writer.close();
 
     }
 }

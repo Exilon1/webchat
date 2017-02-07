@@ -8,6 +8,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Date;
@@ -73,12 +74,13 @@ public class ChatWindowController extends HttpServlet {
     }
 
     private void genPage(HttpServletResponse resp, String nickName, ServletContext servletContext) throws IOException {
-        Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put("nick", nickName);
+        Map<String, Object> map = new HashMap<>();
+        map.put("nick", nickName);
         resp.addCookie(new Cookie("nickname", URLEncoder.encode(nickName, "UTF-8")));
-        resp.getWriter().println(TemplateEngine.getInstance().getPage("index.html", pageVariables, servletContext));
+        PrintWriter writer = resp.getWriter();
+        writer.println(TemplateEngine.getInstance().getPage("index.html", map, servletContext));
         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-        resp.getWriter().close();
+        writer.close();
     }
 
     private void process(HttpServletRequest req, HttpServletResponse resp) {
