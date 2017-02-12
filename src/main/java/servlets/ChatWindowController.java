@@ -1,6 +1,6 @@
 package servlets;
 
-import util.DbHelper;
+import util.CookieHelper;
 import util.TemplateEngine;
 import dao.AuthentificationCrud;
 import dao.MessagesCrud;
@@ -42,8 +42,8 @@ public class ChatWindowController extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        String nickName = URLDecoder.decode(DbHelper.getCookieName(req.getCookies(), "nickname"), "UTF-8");
-        String jsessionid = DbHelper.getCookieName(req.getCookies(), SESSION);
+        String nickName = URLDecoder.decode(CookieHelper.getCookieName(req.getCookies(), "nickname"), "UTF-8");
+        String jsessionid = CookieHelper.getCookieName(req.getCookies(), SESSION);
 
     //    System.out.println(jsessionid);
         if (authentificationCrud.isSessionContains(jsessionid)) {

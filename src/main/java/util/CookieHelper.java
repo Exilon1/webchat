@@ -6,7 +6,7 @@ import javax.servlet.http.Cookie;
 /**
  * Created by Alexey on 12.02.2017.
  */
-public class DbHelper {
+public class CookieHelper {
 
     public static String getCookieName(Cookie[] cookies, String param) {
         String str = null;
