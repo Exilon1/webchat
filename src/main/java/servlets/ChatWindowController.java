@@ -1,5 +1,6 @@
 package servlets;
 
+import util.DbHelper;
 import util.TemplateEngine;
 import dao.AuthentificationCrud;
 import dao.MessagesCrud;
@@ -41,23 +42,14 @@ public class ChatWindowController extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        String nickName = null;
-        String jsessionid = null;
-        for (Cookie cookie : req.getCookies()) {
-            if ("nickname".equals(cookie.getName())) {
-                nickName = URLDecoder.decode(cookie.getValue(), "UTF-8");
-                System.out.println(">>>>>>> " + cookie.getValue());
-            }
-            if (SESSION.equals(cookie.getName())) {
-                jsessionid = cookie.getValue();
-            }
-        }
+        String nickName = URLDecoder.decode(DbHelper.getCookieName(req.getCookies(), "nickname"), "UTF-8");
+        String jsessionid = DbHelper.getCookieName(req.getCookies(), SESSION);
 
     //    System.out.println(jsessionid);
         if (authentificationCrud.isSessionContains(jsessionid)) {
             genPage(resp, nickName, session.getServletContext());
         } else {
-            System.out.println("chat forward to login");
+            System.out.println("back to login");
             resp.sendRedirect("./login");
         }
         resp.setStatus(HttpServletResponse.SC_OK);

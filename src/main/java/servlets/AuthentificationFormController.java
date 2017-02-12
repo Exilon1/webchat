@@ -1,6 +1,7 @@
 package servlets;
 
 import dao.AuthentificationCrud;
+import util.DbHelper;
 import util.TemplateEngine;
 
 import javax.servlet.ServletContext;
@@ -33,12 +34,7 @@ public class AuthentificationFormController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        String jsessionid = null;
-        for (Cookie cookie : req.getCookies()) {
-            if (SESSION.equals(cookie.getName())) {
-                jsessionid = cookie.getValue();
-            }
-        }
+        String jsessionid = DbHelper.getCookieName(req.getCookies(), SESSION);
         if (authentificationCrud.isSessionContains(jsessionid)) {
             System.out.println("AuthentificationFormController isSessionContains true");
             resp.sendRedirect("./");
