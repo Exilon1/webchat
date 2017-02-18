@@ -58,7 +58,10 @@ public class MessagesCrud {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        if("h2Connection".equals(property)) {
+            insert("Alex", new Date(), "Some message");
 
+        }
     }
 
     public void insert(String nickName, Date date, String message) {
@@ -77,7 +80,7 @@ public class MessagesCrud {
         String html = "";
         try (ResultSet rs = readStatement.executeQuery()) {
             while (rs.next()) {
-                html += "<li>" + rs.getTimestamp("Nickname") + " - " + rs.getString("Date") + ": " + rs.getString("Message") + "</li>";
+                html += "<li>" + rs.getString("Nickname") + " - " + rs.getTimestamp("Date") + ": " + rs.getString("Message") + "</li>";
             }
         } catch (SQLException e) {
             e.printStackTrace();

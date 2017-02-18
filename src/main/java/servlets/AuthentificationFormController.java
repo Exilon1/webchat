@@ -52,14 +52,8 @@ public class AuthentificationFormController extends HttpServlet {
         String pass = req.getParameter("pass");
         if (login != null & pass != null) {
             boolean isAuth = authentificationCrud.verifyAccount(login, pass);
-                        if (isAuth) {
-                String jsessionid = null;
-                for (Cookie cookie: req.getCookies()){
-                    if (SESSION.equals(cookie.getName())){
-                        jsessionid = cookie.getValue();
-                        break;
-                    }
-                }
+            if (isAuth) {
+                String jsessionid = CookieHelper.getCookieName(req.getCookies(), SESSION);
                 if (jsessionid!=null)
                     authentificationCrud.insertSession(jsessionid, login);
                 resp.addCookie(new Cookie("nickname", URLEncoder.encode(login, "UTF-8")));

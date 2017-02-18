@@ -70,9 +70,11 @@ public class ChatWindowController extends HttpServlet {
 
     private void genPage(HttpServletResponse resp, String nickName, ServletContext servletContext) throws IOException {
         Map<String, Object> map = new HashMap<>();
-        map.put("nick", nickName);
+        resp.setContentType("text/html;charset=utf-8");
         resp.addCookie(new Cookie("nickname", URLEncoder.encode(nickName, "UTF-8")));
         PrintWriter writer = resp.getWriter();
+        map.put("messages", messagesCrud.read());
+        map.put("nick", nickName);
         writer.println(TemplateEngine.getInstance().generatePage("index.html", map, servletContext));
         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         writer.close();
