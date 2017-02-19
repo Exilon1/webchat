@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 /**
@@ -35,11 +36,11 @@ public class AuthentificationFormController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         String jsessionid = CookieHelper.getCookieName(req.getCookies(), SESSION);
-        if (authentificationCrud.isSessionContains(jsessionid)) {
-            System.out.println("AuthentificationFormController isSessionContains true");
+        if (authentificationCrud.verifySession(jsessionid)) {
+            System.out.println("AuthentificationFormController verifySession true");
             resp.sendRedirect("./");
         } else {
-            System.out.println("AuthentificationFormController isSessionContains false");
+            System.out.println("AuthentificationFormController verifySession false");
             genPage(resp, session.getServletContext());
         }
         resp.setStatus(HttpServletResponse.SC_OK);

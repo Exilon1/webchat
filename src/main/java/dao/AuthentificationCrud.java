@@ -107,7 +107,7 @@ public class AuthentificationCrud {
         }
     }
 
-    public boolean isSessionContains(String sessonid) {
+    public boolean verifySession(String sessonid) {
         if (sessonid==null)
             return false;
         boolean isContains = false;
@@ -123,6 +123,22 @@ public class AuthentificationCrud {
         }
         return isContains;
     }
+
+    public boolean isNicknameContains(String nickname) {
+        boolean isContains = false;
+        try (ResultSet rs = readAccStatement.executeQuery()) {
+            while (rs.next()) {
+                if (rs.getString("Nickname").equals(nickname)) {
+                    isContains = true;
+                    break;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isContains;
+    }
+
 
 
     public void close() {

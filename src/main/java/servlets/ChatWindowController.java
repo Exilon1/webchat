@@ -46,15 +46,16 @@ public class ChatWindowController extends HttpServlet {
         String jsessionid = CookieHelper.getCookieName(req.getCookies(), SESSION);
 
     //    System.out.println(jsessionid);
-        if (authentificationCrud.isSessionContains(jsessionid)) {
+        if (authentificationCrud.verifySession(jsessionid)) {
             genPage(resp, nickName, session.getServletContext());
         } else {
-            System.out.println("back to login");
             resp.sendRedirect("./login");
         }
         resp.setStatus(HttpServletResponse.SC_OK);
 
     }
+
+    private String name = null;
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
@@ -62,6 +63,8 @@ public class ChatWindowController extends HttpServlet {
         String nickname = req.getParameter("nick");
         Date msgDate = new Date();
         if (msg != null & nickname != null) {
+            if(!authentificationCrud.isNicknameContains(nickname))
+                resp.sendRedirect("./login");;
             messagesCrud.insert(nickname, msgDate, msg);
             genPage(resp, nickname, session.getServletContext());
         } else resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
